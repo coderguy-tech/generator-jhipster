@@ -336,7 +336,7 @@ public class <%= asEntity('User') %><% if (databaseType === 'sql' || databaseTyp
     <%_ if (databaseType === 'sql' && reactive) { _%>
     @Column("reset_key")
     <%_ } _%>
-    <%_ if (atabaseType === 'mongodb') { _%>
+    <%_ if (databaseType === 'mongodb') { _%>
     @Field("reset_key")
     <%_ } _%>
     <%_ if (databaseType === 'couchbase') { _%>
