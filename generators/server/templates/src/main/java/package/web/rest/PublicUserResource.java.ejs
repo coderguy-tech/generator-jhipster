@@ -20,7 +20,7 @@ package <%= packageName %>.web.rest;
 
 <%_ if (searchEngine === 'elasticsearch') { _%>
 import <%= packageName %>.repository.search.UserSearchRepository;
-<%_ } else { _%>
+<%_ } else if (searchEngine != false) { _%>
 import <%= packageName %>.repository.UserRepository;
 import <%= packageName %>.domain.User;
 <%_ } _%>
@@ -92,11 +92,11 @@ public class PublicUserResource {
     private final UserService userService;
     <%_ if (searchEngine === 'elasticsearch') { _%>
     private final UserSearchRepository userSearchRepository;
-    <%_ } else { _%>
+    <%_ } else if (searchEngine != false) { _%>
     private final UserRepository userRepository;
     <%_ } _%>
 
-    public PublicUserResource(UserService userService<% if (searchEngine === 'elasticsearch') { %>, UserSearchRepository userSearchRepository<% } else { %>, UserRepository userRepository<% } %> ) {
+    public PublicUserResource(UserService userService<% if (searchEngine === 'elasticsearch') { %>, UserSearchRepository userSearchRepository<% } else if (searchEngine != false) { %>, UserRepository userRepository<% } %> ) {
         this.userService = userService;
         <%_ if (searchEngine === 'elasticsearch') { _%>
         this.userSearchRepository = userSearchRepository;
