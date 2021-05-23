@@ -100,7 +100,7 @@ public class PublicUserResource {
         this.userService = userService;
         <%_ if (searchEngine === 'elasticsearch') { _%>
         this.userSearchRepository = userSearchRepository;
-        <%_ } else { _%>
+        <%_ } else if (searchEngine != false) { _%>
         this.userRepository = userRepository;
         <%_ } _%>
     }
