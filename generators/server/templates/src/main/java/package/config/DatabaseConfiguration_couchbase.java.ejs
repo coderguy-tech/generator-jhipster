@@ -166,8 +166,9 @@ public class DatabaseConfiguration extends AbstractCouchbaseConfiguration {
     }
 
     @Bean
-    public Couchmove couchmove(Bucket bucket, Cluster cluster) {
+    public Couchmove couchmove(Cluster cluster) {
         log.debug("Configuring Couchmove");
+        Bucket bucket = cluster.bucket(getBucketName());
         Couchmove couchmove = new Couchmove(bucket, cluster, "config/couchmove/changelog");
         couchmove.migrate();
         return couchmove;
