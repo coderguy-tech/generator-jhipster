@@ -250,8 +250,11 @@ public class <%= asEntity(entityClass) %> implements Serializable {
     @Column(name = "<%- fieldNameAsDatabaseColumn %>"<% if (fieldValidate === true) { %><% if (fieldValidateRules.includes('maxlength')) { %>, length = <%= fieldValidateRulesMaxlength %><% } %><% if (required) { %>, nullable = false<% } %><% if (unique) { %>, unique = true<% } %><% } %>)
         <%_ }
     } _%>
-    <%_ if (databaseType === 'mongodb' || databaseType === 'couchbase') { _%>
+    <%_ if (databaseType === 'mongodb') { _%>
     @Field("<%= fieldNameUnderscored %>")
+    <%_ } _%>
+    <%_ if (databaseType === 'couchbase') { _%>
+    @Field
     <%_ } _%>
     <%_ if (databaseType === 'neo4j') { _%>
     @Property("<%=fieldNameUnderscored %>")
@@ -275,8 +278,11 @@ public class <%= asEntity(entityClass) %> implements Serializable {
       @NotNull
         <%_ } _%>
       <%_ } _%>
-      <%_ if (databaseType === 'mongodb' || databaseType === 'couchbase') { _%>
+      <%_ if (databaseType === 'mongodb') { _%>
     @Field("<%= fieldNameUnderscored %>_content_type")
+      <%_ } _%>
+      <%_ if (databaseType === 'couchbase') { _%>
+    @Field
       <%_ } _%>
       <%_ if (databaseType === 'neo4j') { _%>
     @Property("<%=fieldNameUnderscored %>_content_type")
@@ -327,12 +333,14 @@ relationships.forEach((relationship, idx) => {
         <%_ if (enableHibernateCache) { _%>
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
         <%_ }
-        } else if (databaseType === 'mongodb' || databaseType === 'couchbase') {
-            if (databaseType === 'mongodb' && !otherEntityIsEmbedded) { _%>
+        } else if (databaseType === 'mongodb') {
+            if (!otherEntityIsEmbedded) { _%>
     @DBRef
         <%_ } _%>
     @Field("<%= relationshipFieldName %>")
-        <%_ if (databaseType === 'couchbase' && !otherEntityIsEmbedded) { _%>
+        <%_ } else if (databaseType === 'couchbase') { _%>
+    @Field
+        <%_ if (!otherEntityIsEmbedded) { _%>
     private Set<String> <%= relationshipFieldName %>Ids = new HashSet<>();
 
     @N1qlJoin(on = "lks.<%= relationshipFieldName %>=meta(rks).id", fetchType = FetchType.IMMEDIATE)
@@ -361,9 +369,10 @@ relationships.forEach((relationship, idx) => {
     } else if ((databaseType === 'mongodb' || databaseType === 'couchbase') && !otherEntityIsEmbedded) {
         if (databaseType === 'mongodb') { _%>
     @DBRef
-    <%_ } _%>
     @Field("<%= relationshipFieldName %>")
+    <%_ } _%>
     <%_ if (databaseType === 'couchbase') { _%>
+    @Field
     private String <%= relationshipFieldName %>Id;
 
     @N1qlJoin(on = "lks.<%= relationshipFieldName %>=meta(rks).id", fetchType = FetchType.IMMEDIATE)
@@ -416,9 +425,10 @@ relationships.forEach((relationship, idx) => {
         } else if ((databaseType === 'mongodb' || databaseType === 'couchbase') && !otherEntityIsEmbedded) {
             if (databaseType === 'mongodb') { _%>
     @DBRef
-        <%_ } _%>
     @Field("<%= relationshipFieldNamePlural %>")
+        <%_ } _%>
         <%_ if (databaseType === 'couchbase') { _%>
+    @Field
     private Set<String> <%= relationshipFieldName %>Ids = new HashSet<>();
 
     @N1qlJoin(on = "lks.<%= relationshipFieldNamePlural %>=meta(rks).id", fetchType = FetchType.IMMEDIATE)
@@ -466,9 +476,9 @@ relationships.forEach((relationship, idx) => {
         } else if ((databaseType === 'mongodb' || databaseType === 'couchbase') && !otherEntityIsEmbedded) {
             if (databaseType === 'mongodb') { _%>
     @DBRef
-        <%_ } _%>
     @Field("<%= relationshipFieldName %>")
-        <%_ if (databaseType === 'couchbase') { _%>
+        <%_ } if (databaseType === 'couchbase') { _%>
+    @Field
     private String <%= relationshipFieldName %>Id;
 
     @N1qlJoin(on = "lks.<%= relationshipFieldName %>=meta(rks).id", fetchType = FetchType.IMMEDIATE)
