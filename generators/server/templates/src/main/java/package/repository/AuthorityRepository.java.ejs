@@ -61,7 +61,6 @@ import org.springframework.data.neo4j.repository.<% if (reactive) { %>Reactive<%
  * Spring Data Couchbase repository for the {@link Authority} entity.
  */
 <%_ } _%>
-<%_ if ((databaseType === 'sql' && !reactive) || databaseType === 'mongodb' || databaseType === 'neo4j' || databaseType === 'couchbase') { _%>
 @Repository
 public interface AuthorityRepository extends <% if (databaseType === 'sql') { %><% if (reactive) { %>R2dbc<% } else { %>Jpa<% } %>Repository<% } else { %><% if (reactive) { %>Reactive<% } %><% if (databaseType === 'mongodb') { %>MongoRepository<% } %><% if (databaseType === 'neo4j') { %>Neo4jRepository<% } %><% if (databaseType === 'couchbase') { %>CouchbaseRepository<% } %><% } %><Authority, String> {
     <%_ if (databaseType === 'neo4j') { _%>
