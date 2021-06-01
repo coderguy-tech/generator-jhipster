@@ -488,14 +488,14 @@ class UserResourceIT <% if (databaseType === 'cassandra') { %>extends AbstractCa
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[0].login").value(equals(DEFAULT_LOGIN)))
-            .andExpect(jsonPath("$.[0].firstName").value(equals(DEFAULT_FIRSTNAME)))
-            .andExpect(jsonPath("$.[0].lastName").value(equals(DEFAULT_LASTNAME)))
-            .andExpect(jsonPath("$.[0].email").value(equals(DEFAULT_EMAIL)))
+            .andExpect(jsonPath("$.[*].login").value(hasItem(DEFAULT_LOGIN)))
+            .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRSTNAME)))
+            .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LASTNAME)))
+            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
             <%_ if (databaseType !== 'cassandra') { _%>
-            .andExpect(jsonPath("$.[0].imageUrl").value(equals(DEFAULT_IMAGEURL)))
+            .andExpect(jsonPath("$.[*].imageUrl").value(hasItem(DEFAULT_IMAGEURL)))
             <%_ } _%>
-            .andExpect(jsonPath("$.[0].langKey").value(equals(DEFAULT_LANGKEY)));
+            .andExpect(jsonPath("$.[*].langKey").value(hasItem(DEFAULT_LANGKEY)));
         <%_ } else { _%>
         <%= asDto('AdminUser') %> foundUser = webTestClient.get().uri("/api/admin/users?sort=id,DESC")
             .accept(MediaType.APPLICATION_JSON)
